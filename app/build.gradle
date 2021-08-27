@@ -36,6 +36,11 @@ dependencies {
     def nav_version = "2.3.5"
     def retrofitVersion = '2.9.0'
     def okhttpVersion = '4.9.1'
+    def room_version = "2.3.0"
+
+    //Room
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")

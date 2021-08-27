@@ -2,7 +2,10 @@ package com.mendosal.locationsweather.data
 
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Room
 import com.mendosal.locationsweather.app.MyApp
+import com.mendosal.locationsweather.data.local.CityWeatherRoomDatabase
+import com.mendosal.locationsweather.data.local.dao.CityWeatherDao
 import com.mendosal.locationsweather.data.remote.WeatherApiService
 import com.mendosal.locationsweather.data.remote.WeatherClient
 import com.mendosal.locationsweather.data.remote.models.WeatherResponse
@@ -17,11 +20,18 @@ class WeatherRepository {
     var weatherApiService: WeatherApiService? = null
     var weatherClient: WeatherClient? = null
     var weatherInfo: MutableLiveData<WeatherResponse>? = null
+    var cityWeatherDao: CityWeatherDao? = null
 
     init {
         weatherClient = WeatherClient.instance
         weatherApiService = weatherClient?.getWeatherService()
         weatherInfo = weatherInformation()
+        val db = Room.databaseBuilder(
+            MyApp.instance,
+            CityWeatherRoomDatabase::class.java, "city_weather_db"
+        ).build()
+        cityWeatherDao = db.cityWeatherDao()
+
     }
 
     fun weatherInformation(): MutableLiveData<WeatherResponse>? {
