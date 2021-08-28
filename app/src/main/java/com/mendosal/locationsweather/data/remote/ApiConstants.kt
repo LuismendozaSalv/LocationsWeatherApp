@@ -10,5 +10,6 @@ class ApiConstants {
 
         val URL_PARAM_API_KEY = "appid"
         val URL_PARAM_LANGUAGE = "lang"
+        val URL_PARAM_UNITS = "units"
     }
 }

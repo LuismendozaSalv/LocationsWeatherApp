@@ -16,6 +16,7 @@ class RequestInterceptor : Interceptor {
             .newBuilder()
             .addQueryParameter(ApiConstants.URL_PARAM_API_KEY, ApiConstants.API_KEY)
             .addQueryParameter(ApiConstants.URL_PARAM_LANGUAGE, "es")
+            .addQueryParameter(ApiConstants.URL_PARAM_UNITS, "metric")
             .build()
         var request = chain.request()
         request = request.newBuilder().url(urlWithParams)

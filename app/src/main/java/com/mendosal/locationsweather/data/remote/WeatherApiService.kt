@@ -13,4 +13,7 @@ interface WeatherApiService {
     @GET("weather")
     fun getWeatherByCoordinates(@Query("lat") lat: Double,
                                 @Query("lon") lon: Double): Call<WeatherResponse>
+
+    @GET("weather")
+    suspend fun getWeatherByCityName(@Query("q") cityName: String): WeatherResponse
 }

@@ -1,4 +1,4 @@
-package com.mendosal.locationsweather.ui
+package com.mendosal.locationsweather.ui.maps
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -19,11 +19,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mendosal.locationsweather.R
-import com.mendosal.locationsweather.data.remote.models.WeatherResponse
+import com.mendosal.locationsweather.data.local.entity.CityWeatherEntity
+import com.mendosal.locationsweather.utils.ImageUtils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MapsFragment : Fragment() {
     private lateinit var mapsViewModel: MapsViewModel
-    private lateinit var weatherInfo: WeatherResponse
+    private lateinit var weatherInfo: List<CityWeatherEntity>
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -41,7 +44,7 @@ class MapsFragment : Fragment() {
                         .position(sydney)
                         .title("Marker in Sydney")
                         .snippet("Atmosphere")
-                        .icon(bitMapFromVector(R.drawable.ic_cloud, 60, 60)))
+                        .icon(context?.let { ImageUtils.bitMapFromVector(it, R.drawable.ic_cloud, 60, 60) }))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
@@ -52,8 +55,8 @@ class MapsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
-        mapsViewModel.getWeatherInfo().observe(viewLifecycleOwner, {
-            weatherInfo = it
+        mapsViewModel.weatherInfo.observe(viewLifecycleOwner, {
+            weatherInfo = it.data!!
         })
         return view
     }
@@ -64,18 +67,5 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
-    private fun bitMapFromVector(vectorResID: Int, width: Int = 0, height: Int = 0): BitmapDescriptor {
-        val vectorDrawable = context?.let { ContextCompat.getDrawable(it, vectorResID) }
-        var vectorHeight = vectorDrawable!!.intrinsicHeight
-        var vectorWidth = vectorDrawable.intrinsicWidth
-        if (width != 0 && height != 0) {
-            vectorHeight = height
-            vectorWidth = width
-        }
-        vectorDrawable!!.setBounds(0, 0, vectorWidth, vectorHeight)
-        val bitmap = Bitmap.createBitmap(vectorWidth, vectorHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        vectorDrawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
+
 }
