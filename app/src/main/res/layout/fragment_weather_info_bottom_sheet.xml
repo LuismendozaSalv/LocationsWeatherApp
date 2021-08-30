@@ -12,15 +12,11 @@
             type="com.mendosal.locationsweather.data.remote.models.ExtraInfo" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/consContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.weatherInfo.WeatherInfoBottomSheet">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
 
             <TextView
                 android:id="@+id/tvCityName"
@@ -37,12 +33,12 @@
                 android:id="@+id/tvTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{cityWeather.temperature}"
+                android:text="@{cityWeather.temperature + ` °C`}"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintBottom_toBottomOf="@+id/ivWeatherIcon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/imageView" />
+                app:layout_constraintStart_toEndOf="@+id/ivWeatherIcon"
+                app:layout_constraintTop_toTopOf="@+id/ivWeatherIcon" />
 
             <TextView
                 android:id="@+id/tvLocalTime"
@@ -50,166 +46,156 @@
                 android:layout_height="wrap_content"
                 android:text="@{extraInfo.localTime}"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toStartOf="@+id/imageView"
+                app:layout_constraintBottom_toBottomOf="@+id/ivWeatherIcon"
+                app:layout_constraintEnd_toStartOf="@+id/ivWeatherIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-            <TextView
-                android:id="@+id/tvStateBehavior"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                app:layout_constraintTop_toTopOf="@+id/ivWeatherIcon" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/ivWeatherIcon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="16dp"
+                app:imageResource="@{extraInfo.icon}"
                 app:layout_constraintEnd_toEndOf="@+id/tvCityName"
                 app:layout_constraintStart_toStartOf="@+id/tvCityName"
-                app:layout_constraintTop_toBottomOf="@+id/tvCityName"
-                android:src="@{extraInfo.icon}" />
+                app:layout_constraintTop_toBottomOf="@+id/tvCityName" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivWeatherIcon">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardWind"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cardCloud"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView">
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardWind"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/cardCloud"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="4dp">
+                    <ImageView
+                        android:id="@+id/ivWind"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_wind"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/ivWind"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_wind"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/tvWind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@{cityWeather.wind + ` Km\\h` }"
+                        app:layout_constraintEnd_toEndOf="@+id/ivWind"
+                        app:layout_constraintStart_toStartOf="@+id/ivWind"
+                        app:layout_constraintTop_toBottomOf="@+id/ivWind" />
 
-                        <TextView
-                            android:id="@+id/tvWind"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@{cityWeather.wind}"
-                            app:layout_constraintEnd_toEndOf="@+id/ivWind"
-                            app:layout_constraintStart_toStartOf="@+id/ivWind"
-                            app:layout_constraintTop_toBottomOf="@+id/ivWind" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
-                </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCloud"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cardHumidity"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cardWind"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCloud"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/cardHumidity"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/cardWind"
-                    app:layout_constraintTop_toTopOf="parent">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/ivCloud"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="8dp"
+                        android:src="@drawable/ic_humidity"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/ivCloud"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginTop="8dp"
-                            android:src="@drawable/ic_humidity"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/tvCloud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@{cityWeather.clouds + ` %`}"
+                        app:layout_constraintEnd_toEndOf="@+id/ivCloud"
+                        app:layout_constraintStart_toStartOf="@+id/ivCloud"
+                        app:layout_constraintTop_toBottomOf="@+id/ivCloud" />
 
-                        <TextView
-                            android:id="@+id/tvCloud"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@{cityWeather.clouds}"
-                            app:layout_constraintEnd_toEndOf="@+id/ivCloud"
-                            app:layout_constraintStart_toStartOf="@+id/ivCloud"
-                            app:layout_constraintTop_toBottomOf="@+id/ivCloud" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
-                </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardHumidity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cardCloud"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardHumidity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/cardCloud"
-                    app:layout_constraintTop_toTopOf="parent">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="4dp">
+                    <ImageView
+                        android:id="@+id/ivHumidity"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_cloud"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/ivHumidity"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_cloud"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/tvHumidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@{cityWeather.humidity + ` %`}"
+                        app:layout_constraintEnd_toEndOf="@+id/ivHumidity"
+                        app:layout_constraintStart_toStartOf="@+id/ivHumidity"
+                        app:layout_constraintTop_toBottomOf="@+id/ivHumidity" />
 
-                        <TextView
-                            android:id="@+id/tvHumidity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@{cityWeather.humidity}"
-                            app:layout_constraintEnd_toEndOf="@+id/ivHumidity"
-                            app:layout_constraintStart_toStartOf="@+id/ivHumidity"
-                            app:layout_constraintTop_toBottomOf="@+id/ivHumidity" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

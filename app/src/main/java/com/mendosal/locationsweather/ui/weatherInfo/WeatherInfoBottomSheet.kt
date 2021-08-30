@@ -16,23 +16,24 @@ import com.mendosal.locationsweather.databinding.FragmentWeatherInfoBottomSheetB
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-open class WeatherInfoBottomSheet : Fragment() {
+open class WeatherInfoBottomSheet : BottomSheetDialogFragment() {
     private lateinit var weatherInfoViewModel: WeatherInfoViewModel
     private lateinit var weatherInfo: List<CityWeatherEntity>
-    val args: WeatherInfoBottomSheetArgs by navArgs()
+    private val args: WeatherInfoBottomSheetArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_weather_info_bottom_sheet, container, false)
+        return inflater.inflate(R.layout.fragment_weather_info_bottom_sheet, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         weatherInfoViewModel = ViewModelProvider(this).get(WeatherInfoViewModel::class.java)
         weatherInfoViewModel.cityName = args.cityName
+        val binding = FragmentWeatherInfoBottomSheetBinding.bind(view)
         weatherInfoViewModel.getCityWeatherInfo().observe(viewLifecycleOwner, Observer {
             weatherInfo = it.data!!
-            val binding :FragmentWeatherInfoBottomSheetBinding = DataBindingUtil.setContentView(
-                requireActivity(), R.layout.fragment_weather_info_bottom_sheet)
             binding.cityWeather = weatherInfo.first()
             binding.extraInfo = weatherInfoViewModel.getExtraInfo(weatherInfo.first())
         })
-
-        return view
     }
 }

@@ -35,8 +35,10 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.model.Marker
 import com.mendosal.locationsweather.ui.location.LocationViewModel
+import com.mendosal.locationsweather.ui.weatherInfo.WeatherInfoBottomSheetArgs
 
 @AndroidEntryPoint
 class MapsFragment : Fragment() {
@@ -70,10 +72,12 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        prepRequestLocationUpdates()
     }
 
     private fun prepRequestLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             requestLocationUpdates()
         } else {
             val permissionRequest = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -83,8 +87,8 @@ class MapsFragment : Fragment() {
 
     private fun requestLocationUpdates() {
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
-        locationViewModel.getLocationLiveData().observe(this, Observer {
-
+        locationViewModel.getLocationLiveData().observe(requireActivity(), Observer {
+            Toast.makeText(requireContext(), it.latitude + it.longitude, Toast.LENGTH_LONG).show()
         })
     }
 
@@ -92,6 +96,7 @@ class MapsFragment : Fragment() {
         if (cityWeatherList.size > 0) {
             mapsViewModel.storeValue(DataStoreKeys.INIT_LOAD_KEY, "Y")
         }
+        mMap.clear()
         cityWeatherList.forEach {
             val cityPosition = LatLng(it.coordLat?.toDouble()!!, it.coordLon?.toDouble()!!)
             val id = it.weatherId!!
@@ -112,11 +117,31 @@ class MapsFragment : Fragment() {
         mMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
             override fun onMarkerClick(marker: Marker): Boolean {
                 Toast.makeText(context, marker.title, Toast.LENGTH_LONG).show()
-                val action = MapsFragmentDirections.actionMapsFragmentToWeatherInfoBottomSheet(marker.title)
+
+//                var args: WeatherInfoBottomSheetArgs=
+//                args.cityName = marker.title
+                val action = MapsFragmentDirections
+                        .actionMapsFragmentToWeatherInfoBottomSheet(marker.title!!)
                 view.findNavController().navigate(action)
                 return false
             }
         })
     }
 
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==  PackageManager.PERMISSION_GRANTED) {
+                    requestLocationUpdates()
+                } else {
+                    Toast.makeText(context, "Unable to update location without permission", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 }
