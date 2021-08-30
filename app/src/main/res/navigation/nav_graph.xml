@@ -9,5 +9,19 @@
         android:id="@+id/mapsFragment"
         android:name="com.mendosal.locationsweather.ui.maps.MapsFragment"
         android:label="fragment_maps"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_weatherInfoBottomSheet"
+            app:destination="@id/weatherInfoBottomSheet"
+            app:popUpTo="@id/mapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/weatherInfoBottomSheet"
+        android:name="com.mendosal.locationsweather.ui.weatherInfo.WeatherInfoBottomSheet"
+        android:label="fragment_weather_info_bottom_sheet"
+        tools:layout="@layout/fragment_weather_info_bottom_sheet" >
+        <argument
+            android:name="cityName"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -1,18 +1,22 @@
 package com.mendosal.locationsweather.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.mendosal.locationsweather.data.local.CityWeatherRoomDatabase
 import com.mendosal.locationsweather.data.remote.ApiConstants
 import com.mendosal.locationsweather.data.remote.RequestInterceptor
 import com.mendosal.locationsweather.data.remote.WeatherApiService
+import com.mendosal.locationsweather.utils.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
@@ -49,4 +53,10 @@ object AppModule {
             app,
             CityWeatherRoomDatabase::class.java, "city_weather_db"
         ).build()
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
+        return DataStoreManager(context)
+    }
 }

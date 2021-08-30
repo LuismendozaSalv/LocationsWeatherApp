@@ -10,12 +10,18 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CityWeatherDao {
     @Query("SELECT * FROM cityweather")
-    fun getAll(): List<CityWeatherEntity>
+    fun getAll(): Flow<List<CityWeatherEntity>>
 
     @Query("SELECT * FROM cityweather WHERE city_name like :cityName")
     fun getCityWeather(cityName: String): Flow<List<CityWeatherEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cityWeather: CityWeatherEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(cityWeatherList: List<CityWeatherEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCityWeatherList(cityWeatherList: List<CityWeatherEntity>)
 
 }

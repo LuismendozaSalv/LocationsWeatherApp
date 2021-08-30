@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -20,32 +21,32 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mendosal.locationsweather.R
 import com.mendosal.locationsweather.data.local.entity.CityWeatherEntity
+import com.mendosal.locationsweather.utils.DataStoreKeys
 import com.mendosal.locationsweather.utils.ImageUtils
 import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.gms.common.api.Status
+import android.util.Log
+import android.widget.Toast
+import androidx.navigation.findNavController
+import com.google.android.gms.maps.model.Marker
 
 @AndroidEntryPoint
 class MapsFragment : Fragment() {
+    private lateinit var mMap: GoogleMap
+    private var mapReady = false
     private lateinit var mapsViewModel: MapsViewModel
-    private lateinit var weatherInfo: List<CityWeatherEntity>
 
     private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(
-                MarkerOptions()
-                        .position(sydney)
-                        .title("Marker in Sydney")
-                        .snippet("Atmosphere")
-                        .icon(context?.let { ImageUtils.bitMapFromVector(it, R.drawable.ic_cloud, 60, 60) }))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        this.mMap = googleMap
+        mapReady = true
+        mapsViewModel.defaultCities.observe(viewLifecycleOwner, {
+            val cityWeatherList: List<CityWeatherEntity> = it.data!!
+            loadInitialMarkers(cityWeatherList)
+        })
+        view?.let { callOnMarkerClickListener(it) }
     }
 
     override fun onCreateView(
@@ -55,9 +56,6 @@ class MapsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
-        mapsViewModel.weatherInfo.observe(viewLifecycleOwner, {
-            weatherInfo = it.data!!
-        })
         return view
     }
 
@@ -67,5 +65,35 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
+    private fun loadInitialMarkers(cityWeatherList: List<CityWeatherEntity>) {
+        if (cityWeatherList.size > 0) {
+            mapsViewModel.storeValue(DataStoreKeys.INIT_LOAD_KEY, "Y")
+        }
+        cityWeatherList.forEach {
+            val cityPosition = LatLng(it.coordLat?.toDouble()!!, it.coordLon?.toDouble()!!)
+            val id = it.weatherId!!
+            mMap.addMarker(
+                    MarkerOptions()
+                            .position(cityPosition)
+                            .title(it.cityName)
+                            .snippet(it.weatherDescription)
+                            .icon(context?.let { ImageUtils.bitMapFromVector(it,
+                                    ImageUtils.getWeatherIcon(id), 60, 60) }))
+
+        }
+        val southAmerica = LatLng(-27.8131911, -59.630548)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(southAmerica))
+    }
+
+    private fun callOnMarkerClickListener(view: View) {
+        mMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
+            override fun onMarkerClick(marker: Marker): Boolean {
+                Toast.makeText(context, marker.title, Toast.LENGTH_LONG).show()
+                val action = MapsFragmentDirections.actionMapsFragmentToWeatherInfoBottomSheet(marker.title)
+                view.findNavController().navigate(action)
+                return false
+            }
+        })
+    }
 
 }
