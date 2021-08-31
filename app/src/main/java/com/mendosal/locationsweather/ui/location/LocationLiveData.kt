@@ -58,6 +58,7 @@ class LocationLiveData(val context: Context) : LiveData<LocationDetails>() {
             for (location in locationResult.locations) {
                 setLocationData(location)
             }
+
         }
     }
 
@@ -65,6 +66,7 @@ class LocationLiveData(val context: Context) : LiveData<LocationDetails>() {
      * If we've received a location update, this function will be called.
      */
     private fun setLocationData(location: Location) {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
         value = LocationDetails(location.longitude.toString(), location.latitude.toString())
     }
 

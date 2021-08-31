@@ -1,6 +1,6 @@
 package com.mendosal.locationsweather.data.remote.models
 
 data class Coord(
-    val lat: Float,
-    val lon: Float
+    val lat: Double,
+    val lon: Double
 )

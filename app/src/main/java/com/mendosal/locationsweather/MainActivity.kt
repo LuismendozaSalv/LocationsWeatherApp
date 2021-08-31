@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -16,6 +17,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mendosal.locationsweather.ui.maps.MapsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -59,7 +61,9 @@ class MainActivity : AppCompatActivity() {
                 Activity.RESULT_OK -> {
                     data?.let {
                         val place = Autocomplete.getPlaceFromIntent(data)
-                        Log.i(TAG, "Place: ${place.name}, ${place.id}")
+                        val mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
+                        mapsViewModel.cityName = place.name!!
+                        mapsViewModel.getCityWeatherInfo()
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {

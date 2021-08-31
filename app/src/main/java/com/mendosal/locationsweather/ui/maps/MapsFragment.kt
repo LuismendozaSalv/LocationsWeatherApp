@@ -88,7 +88,12 @@ class MapsFragment : Fragment() {
     private fun requestLocationUpdates() {
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
         locationViewModel.getLocationLiveData().observe(requireActivity(), Observer {
-            Toast.makeText(requireContext(), it.latitude + it.longitude, Toast.LENGTH_LONG).show()
+            mapsViewModel.getCityWeatherInfo(it.latitude, it.longitude).observe(requireActivity(), {
+                val weatherInfoList = it.data!!
+                if (weatherInfoList.size > 0) {
+                    addMarker(weatherInfoList.first())
+                }
+            })
         })
     }
 
@@ -98,28 +103,28 @@ class MapsFragment : Fragment() {
         }
         mMap.clear()
         cityWeatherList.forEach {
-            val cityPosition = LatLng(it.coordLat?.toDouble()!!, it.coordLon?.toDouble()!!)
-            val id = it.weatherId!!
-            mMap.addMarker(
-                    MarkerOptions()
-                            .position(cityPosition)
-                            .title(it.cityName)
-                            .snippet(it.weatherDescription)
-                            .icon(context?.let { ImageUtils.bitMapFromVector(it,
-                                    ImageUtils.getWeatherIcon(id), 60, 60) }))
-
+            addMarker(it)
         }
         val southAmerica = LatLng(-27.8131911, -59.630548)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(southAmerica))
+    }
+
+    fun addMarker(cityWeather: CityWeatherEntity) {
+        val cityPosition = LatLng(cityWeather.coordLat?.toDouble()!!, cityWeather.coordLon?.toDouble()!!)
+        val id = cityWeather.weatherId!!
+        mMap.addMarker(
+                MarkerOptions()
+                        .position(cityPosition)
+                        .title(cityWeather.cityName)
+                        .snippet(cityWeather.weatherDescription)
+                        .icon(context?.let { ImageUtils.bitMapFromVector(it,
+                                ImageUtils.getWeatherIcon(id), 60, 60) }))
     }
 
     private fun callOnMarkerClickListener(view: View) {
         mMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
             override fun onMarkerClick(marker: Marker): Boolean {
                 Toast.makeText(context, marker.title, Toast.LENGTH_LONG).show()
-
-//                var args: WeatherInfoBottomSheetArgs=
-//                args.cityName = marker.title
                 val action = MapsFragmentDirections
                         .actionMapsFragmentToWeatherInfoBottomSheet(marker.title!!)
                 view.findNavController().navigate(action)

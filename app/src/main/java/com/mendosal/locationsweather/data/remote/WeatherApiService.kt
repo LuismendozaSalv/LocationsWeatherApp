@@ -11,8 +11,8 @@ import retrofit2.http.Query
 interface WeatherApiService {
 
     @GET("weather")
-    fun getWeatherByCoordinates(@Query("lat") lat: Double,
-                                @Query("lon") lon: Double): Call<WeatherResponse>
+    suspend fun getWeatherByCoordinates(@Query("lat") lat: String,
+                                @Query("lon") lon: String): WeatherResponse
 
     @GET("weather")
     suspend fun getWeatherByCityName(@Query("q") cityName: String): WeatherResponse

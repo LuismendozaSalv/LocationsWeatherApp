@@ -14,6 +14,9 @@ interface CityWeatherDao {
 
     @Query("SELECT * FROM cityweather WHERE city_name like :cityName")
     fun getCityWeather(cityName: String): Flow<List<CityWeatherEntity>>
+    //
+    @Query("SELECT * FROM cityweather WHERE coord_lat like :lat and coord_lon like :lon")
+    fun getCityWeather(lat: String, lon: String): Flow<List<CityWeatherEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cityWeather: CityWeatherEntity)

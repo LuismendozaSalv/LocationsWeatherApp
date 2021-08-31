@@ -57,5 +57,21 @@ class WeatherRepository @Inject constructor(
             }
     )
 
+    fun getWeatherInfo(lat: String, lon: String) = networkBoundResource(
+            query = {
+                cityWeatherDao.getCityWeather(lat, lon)
+            },
+            fetch = {
+                delay(1000)
+                api.getWeatherByCoordinates(lat, lon)
+            },
+            saveFetchResult = { weatherResponse ->
+                db.withTransaction {
+                    val cityWeather = CityWeatherEntity.getCityWeatherFromResponse(weatherResponse)
+                    cityWeatherDao.insert(cityWeather)
+                }
+            }
+    )
+
 
 }
