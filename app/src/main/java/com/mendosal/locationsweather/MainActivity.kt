@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -63,7 +64,9 @@ class MainActivity : AppCompatActivity() {
                         val place = Autocomplete.getPlaceFromIntent(data)
                         val mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
                         mapsViewModel.cityName = place.name!!
-                        mapsViewModel.getCityWeatherInfo()
+                        mapsViewModel.getCityWeatherInfo().observe(this, {
+                            val cityWeather = it.data!!
+                        })
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {

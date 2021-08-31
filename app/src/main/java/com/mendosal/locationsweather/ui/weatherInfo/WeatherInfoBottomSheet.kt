@@ -36,4 +36,6 @@ open class WeatherInfoBottomSheet : BottomSheetDialogFragment() {
             binding.extraInfo = weatherInfoViewModel.getExtraInfo(weatherInfo.first())
         })
     }
+
+    override fun getTheme(): Int = R.style.BottomSheetMenuTheme
 }

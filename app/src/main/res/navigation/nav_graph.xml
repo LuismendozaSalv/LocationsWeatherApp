@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.mendosal.locationsweather.ui.maps.MapsFragment"
-        android:label="fragment_maps"
+        android:label="@string/city_weather"
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_mapsFragment_to_weatherInfoBottomSheet"

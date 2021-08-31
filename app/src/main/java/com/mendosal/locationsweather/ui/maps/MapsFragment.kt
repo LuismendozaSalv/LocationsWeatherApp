@@ -124,7 +124,6 @@ class MapsFragment : Fragment() {
     private fun callOnMarkerClickListener(view: View) {
         mMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
             override fun onMarkerClick(marker: Marker): Boolean {
-                Toast.makeText(context, marker.title, Toast.LENGTH_LONG).show()
                 val action = MapsFragmentDirections
                         .actionMapsFragmentToWeatherInfoBottomSheet(marker.title!!)
                 view.findNavController().navigate(action)
